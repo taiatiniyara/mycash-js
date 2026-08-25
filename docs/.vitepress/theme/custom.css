@@ -1,4 +1,12 @@
 :root {
+  /* Self-hosted variable fonts (loaded in theme/index.ts) */
+  --vp-font-family-base:
+    "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --vp-font-family-mono:
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular,
+    "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
   --vp-c-brand-1: #e11d48;
   --vp-c-brand-2: #be123c;
   --vp-c-brand-3: #9f1239;
@@ -19,8 +27,7 @@
   --vp-home-hero-image-filter: blur(44px);
 }
 
-/* Version badge under hero */
-.version-badge {
+/* Version badge under hero */.version-badge {
   text-align: center;
   margin-top: -12px;
 }
@@ -89,4 +96,25 @@
 .VPFeature:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Typography polish */
+body {
+  font-feature-settings:
+    "cv11", "ss01";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.VPHomeHero .name,
+.VPHomeHero .text {
+  letter-spacing: -0.02em;
+}
+
+.vp-code span {
+  font-size: 13.5px;
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.015em;
 }
