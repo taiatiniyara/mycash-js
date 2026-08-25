@@ -82,14 +82,15 @@ export default defineConfig({
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Why", link: "/guide/why" },
       { text: "FAQ", link: "/guide/faq" },
-      { text: `v${version}`, link: "https://github.com/taiatiniyara/mycash-js/releases" },
+      {
+        text: `v${version}`,
+        link: "https://github.com/taiatiniyara/mycash-js/releases",
+      },
     ],
     sidebar: [
       {
         text: "Introduction",
-        items: [
-          { text: "Why mycash-js?", link: "/guide/why" },
-        ],
+        items: [{ text: "Why mycash-js?", link: "/guide/why" }],
       },
       {
         text: "Guide",
@@ -106,13 +107,12 @@ export default defineConfig({
       { icon: "github", link: "https://github.com/taiatiniyara/mycash-js" },
     ],
     editLink: {
-      pattern:
-        "https://github.com/taiatiniyara/mycash-js/edit/main/docs/:path",
+      pattern: "https://github.com/taiatiniyara/mycash-js/edit/main/docs/:path",
       text: "Edit this page on GitHub",
     },
     footer: {
       message: "Released under the MIT License.",
-      copyright: "Copyright © 2026 Tiniyara",
+      copyright: "Copyright © 2026 Taia Tiniyara",
     },
     outline: {
       level: [2, 3],
