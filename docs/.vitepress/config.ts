@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+  base: "/mycash-js/",
   title: "mycash-js",
   description:
     "Accept MyCash e-Commerce payments in TypeScript. Zero dependencies.",
