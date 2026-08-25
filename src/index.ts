@@ -1,4 +1,4 @@
-export const version = "0.1.0";
+export const version = "1.0.0";
 
 export { MyCash } from "./mycash.js";
 export { MyCashClient } from "./client.js";

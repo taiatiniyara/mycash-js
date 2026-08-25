@@ -2,6 +2,8 @@
 
 Thanks for your interest in contributing! This is a community open-source project.
 
+[Documentation](https://taiatiniyara.github.io/mycash-js/) · [GitHub](https://github.com/taiatiniyara/mycash-js) · [Issues](https://github.com/taiatiniyara/mycash-js/issues)
+
 ## Getting Started
 
 1. Fork the repository

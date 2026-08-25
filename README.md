@@ -13,7 +13,7 @@ Zero-dependency TypeScript SDK for the [MyCash e-Commerce API](https://www.digic
 npm install mycash-js
 ```
 
-Requires Node.js 18 or later. Also works with Bun, Deno, and edge runtimes.
+Requires Node.js 18+. Also works with Bun, Deno, and edge runtimes.
 
 ## Quick Start
 
@@ -35,8 +35,7 @@ const result = await client.pay({
   narration: "Order #123 — 2x Widgets",
   orderId: "ORDER-123",
   sendOtp: async (requestId) => {
-    // Show your OTP input UI, return the code
-    return "123456";
+    return "123456"; // collect OTP from your UI
   },
 });
 
@@ -52,69 +51,11 @@ console.log(result.transactionId);
 - **Client-side validation** — catches bad inputs before hitting the network
 - **Injectable fetch** — use the built-in fetch or pass your own for testing
 
-## Core Usage
+## Documentation
 
-For full control over each API method:
+Full API reference, error handling guide, testing patterns, and more:
 
-```ts
-import { MyCash } from "mycash-js";
-
-const mycash = new MyCash({
-  apiKey: "YOUR_API_KEY",
-  username: "YOUR_USERNAME",
-  password: "YOUR_PASSWORD",
-  baseUrl: "https://api.mycash.com/v1",
-});
-
-// Step 1: Create payment request
-const { requestId } = await mycash.paymentRequest({
-  productId: "PRODUCT-001",
-  amount: 100.0,
-  customerMobile: "+67570000000",
-  merchantMobile: "+67571111111",
-  narration: "Products:10|Total:100|Cust:John",
-  orderId: "ORDER-456",
-});
-
-// Step 2: Send OTP
-await mycash.sendOtp({ mobileNumber: "+67570000000" });
-
-// Step 3: Approve
-const result = await mycash.approvePayment({
-  requestId,
-  otp: "654321",
-  customerMobile: "+67570000000",
-});
-```
-
-## Error Handling
-
-```ts
-import { MyCashApiError, MyCashNetworkError, MyCashValidationError } from "mycash-js";
-
-try {
-  await client.pay({ ... });
-} catch (error) {
-  if (error instanceof MyCashApiError) {
-    console.log(error.code); // "603"
-    console.log(error.message); // "MyCash Payment system error"
-  } else if (error instanceof MyCashNetworkError) {
-    console.log(error.cause); // underlying Error
-  } else if (error instanceof MyCashValidationError) {
-    console.log(error.field); // "amount"
-  }
-}
-```
-
-## API Flow
-
-```
-paymentRequest  →  sendOTP  →  approvePayment
-    ↓                  ↓              ↓
- requestId         OTP sent     transactionId
-                                    fee
-                              referenceNumber
-```
+**[Read the docs →](https://taiatiniyara.github.io/mycash-js/)**
 
 ## Contributing
 

@@ -18,3 +18,75 @@
   );
   --vp-home-hero-image-filter: blur(44px);
 }
+
+/* Version badge under hero */
+.version-badge {
+  text-align: center;
+  margin-top: -12px;
+}
+
+.version-badge span {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--vp-font-family-mono);
+}
+
+/* Landing page CTA row */
+.cta-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.cta-primary,
+.cta-secondary {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.cta-primary {
+  background: var(--vp-c-brand-1);
+  color: #fff !important;
+}
+
+.cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(225, 29, 72, 0.35);
+}
+
+.cta-secondary {
+  border: 1px solid var(--vp-c-border);
+  color: var(--vp-c-text-1) !important;
+}
+
+.cta-secondary:hover {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1) !important;
+  transform: translateY(-2px);
+}
+
+/* Feature cards on home */
+.VPFeature {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.VPFeature:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}

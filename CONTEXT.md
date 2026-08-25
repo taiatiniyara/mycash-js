@@ -26,7 +26,7 @@ _Avoid_: sku, item_id, productId (on the wire only)
 
 **request_id**:
 A unique identifier returned by `paymentRequest`, used to track and approve the transaction.
-_Aavoid_: txnId, reference
+_Avoid_: txnId, reference
 
 **response_code**:
 A string returned by the MyCash API indicating success (`'0'`) or a specific error.
@@ -38,7 +38,7 @@ _Avoid_: sellerPhone, merchantPhone
 
 **customer_mobile**:
 The mobile number of the customer making the payment. Must be a valid MSISDN.
-_Aavoid_: buyerPhone, customerPhone (on the wire only)
+_Avoid_: buyerPhone, customerPhone (on the wire only)
 
 **narration**:
 A payment description (max 200 characters). Used for reconciliation and display.
