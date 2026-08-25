@@ -1,6 +1,6 @@
 {
   "name": "mycash-js",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Zero-dependency TypeScript SDK for the MyCash e-Commerce API",
   "type": "module",
   "main": "./dist/index.js",
