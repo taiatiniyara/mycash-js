@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/taiatiniyara/mycash-js/compare/v1.0.0...v2.0.0) (2026-08-26)
+
+
+* feat!: unify the SDK behind MyCashClient with an internal wire codec ([4d8a7d3](https://github.com/taiatiniyara/mycash-js/commit/4d8a7d3da957e5f6b09b0609cd1a7a10312dd9de))
+
+
+### BREAKING CHANGES
+
+* the core MyCash class is deprecated and will be
+removed in v3.0. Use MyCashClient — it accepts the same config and
+exposes paymentRequest, sendOtp, approvePayment, and pay.
+
 # 1.0.0 (2026-08-25)
 
 
