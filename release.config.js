@@ -14,7 +14,6 @@ export default {
       "@semantic-release/github",
       {
         releasedLabels: false,
-        discussionCategoryName: "Announcements",
       },
     ],
     [
