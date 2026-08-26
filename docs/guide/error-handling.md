@@ -14,7 +14,7 @@ Every error the SDK throws extends one base class:
 ```text
 MyCashError
 ├── MyCashValidationError   — bad input, before any network call
-├── MyCashNetworkError      — fetch failed / timeout / invalid JSON
+├── MyCashNetworkError      — fetch failed / timeout / invalid or malformed gateway response
 └── MyCashApiError          — gateway responded with an error code
 ```
 

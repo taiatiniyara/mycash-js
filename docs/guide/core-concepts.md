@@ -1,11 +1,11 @@
 ---
 title: Core Concepts
-description: Two-layer design, automatic camelCase↔snake_case translation, client-side validation, and immutable config — the four ideas behind mycash-js.
+description: One client for the whole Payment flow, camelCase↔snake_case translation at the wire seam, client-side validation, and immutable config — the ideas behind mycash-js.
 ---
 
 # Core concepts
 
-mycash-js has a deliberately small surface: two classes, a handful of types, and one convention. Understanding these four ideas covers 95% of the SDK.
+mycash-js has a deliberately small surface: one client class, a handful of types, and one convention. Understanding these four ideas covers 95% of the SDK.
 
 ## Two layers, one package
 
@@ -13,24 +13,20 @@ mycash-js has a deliberately small surface: two classes, a handful of types, and
 ┌─────────────────────────────────────────────┐
 │  MyCashClient        (high-level)           │
 │  pay() — orchestrates the whole flow        │
-├─────────────────────────────────────────────┤
-│  MyCash              (core)                 │
 │  paymentRequest() / sendOtp() / approve...  │
 ├─────────────────────────────────────────────┤
 │  fetch → MyCash gateway (snake_case wire)   │
 └─────────────────────────────────────────────┘
 ```
 
-**`MyCashClient`** is what most integrations want. Its `pay()` method runs the full three-step gateway sequence and hands you the final transaction details. You plug in one callback for OTP collection.
+**`MyCashClient`** is the SDK. Its `pay()` method runs the full three-step gateway sequence and hands you the final transaction details — you plug in one callback for OTP collection. It also exposes each step individually (`paymentRequest`, `sendOtp`, `approvePayment`) for custom retry logic, non-standard sequencing (e.g. re-sending an expired OTP), or per-step instrumentation.
 
-**`MyCash`** is the raw layer. One method per gateway endpoint, no orchestration. Use it when you need:
-
-- Custom retry logic around a specific step
-- Non-standard sequencing (e.g. re-sending an expired OTP)
-- Per-step instrumentation or audit logging
+::: warning The core `MyCash` class is deprecated
+`MyCash` was deprecated in v2.0 and will be removed in v3.0. `MyCashClient` exposes every method `MyCash` did, so migrating is a find-and-replace of the constructor.
+:::
 
 ::: tip Rule of thumb
-Start with `MyCashClient`. Drop down to `MyCash` only when `pay()` doesn't fit your flow — and you can still share the same config.
+Use `MyCashClient`. For flows `pay()` doesn't fit, call its individual step methods directly.
 :::
 
 ## camelCase in, snake_case on the wire
@@ -90,9 +86,9 @@ All types are exported from the package root:
 import type {
   MyCashConfig,            // constructor config
   PayParams,               // pay() params incl. sendOtp callback
-  PaymentRequestParams,    // core: step 1
-  SendOtpParams,           // core: step 2
-  ApprovePaymentParams,    // core: step 3
+  PaymentRequestParams,    // step 1
+  SendOtpParams,           // step 2
+  ApprovePaymentParams,    // step 3
   PaymentRequestResponse,  // { requestId }
   SendOtpResponse,         // { message }
   ApprovePaymentResponse,  // transactionId, fee, amounts...

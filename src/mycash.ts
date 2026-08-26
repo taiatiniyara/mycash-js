@@ -1,23 +1,61 @@
 import type {
+  ApprovePaymentParams,
+  ApprovePaymentResponse,
   MyCashConfig,
   PaymentRequestParams,
   PaymentRequestResponse,
   SendOtpParams,
   SendOtpResponse,
-  ApprovePaymentParams,
-  ApprovePaymentResponse,
 } from "./types.js";
-import { MyCashApiError, MyCashNetworkError } from "./errors.js";
+import { MyCashApiError, MyCashNetworkError, MyCashValidationError } from "./errors.js";
 import {
-  camelToSnake,
-  snakeToCamel,
-  transformKeys,
-  validatePaymentRequest,
-  validateApprovePayment,
-  validateSendOtp,
-} from "./utils.js";
+  encodeApprovePayment,
+  encodePaymentRequest,
+  encodeSendOtp,
+  decodeApprovePayment,
+  decodePaymentRequest,
+  decodeSendOtp,
+  type WireRecord,
+} from "./wire.js";
 
-type ApiMethod = "paymentRequest" | "sendOTP" | "approvePayment";
+function requireField(value: string, field: string): asserts value is string {
+  if (!value || value.trim().length === 0) {
+    throw new MyCashValidationError(field, `${field} is required`);
+  }
+}
+
+function validatePaymentRequest(params: PaymentRequestParams): void {
+  requireField(params.productId, "productId");
+
+  if (typeof params.amount !== "number" || params.amount <= 0) {
+    throw new MyCashValidationError(
+      "amount",
+      "amount must be a positive number",
+    );
+  }
+
+  requireField(params.customerMobile, "customerMobile");
+  requireField(params.merchantMobile, "merchantMobile");
+
+  if (params.narration.length > 200) {
+    throw new MyCashValidationError(
+      "narration",
+      "narration must be 200 characters or fewer",
+    );
+  }
+
+  requireField(params.orderId, "orderId");
+}
+
+function validateApprovePayment(params: ApprovePaymentParams): void {
+  requireField(params.requestId, "requestId");
+  requireField(params.otp, "otp");
+  requireField(params.customerMobile, "customerMobile");
+}
+
+function validateSendOtp(params: SendOtpParams): void {
+  requireField(params.mobileNumber, "mobileNumber");
+}
 
 export class MyCash {
   readonly #config: MyCashConfig;
@@ -26,16 +64,11 @@ export class MyCash {
     this.#config = Object.freeze({ ...config });
   }
 
-  async #request<T>(method: ApiMethod, params: Record<string, unknown>): Promise<T> {
-    const { fetch: fetchFn = globalThis.fetch, baseUrl, apiKey, username, password } = this.#config;
-
-    const body = {
-      apikey: apiKey,
-      username,
-      password,
-      method,
-      ...transformKeys(params, camelToSnake),
-    };
+  async #exchange<T>(
+    body: WireRecord,
+    decode: (data: WireRecord) => T,
+  ): Promise<T> {
+    const { fetch: fetchFn = globalThis.fetch, baseUrl } = this.#config;
 
     let response: Response;
     try {
@@ -48,9 +81,9 @@ export class MyCash {
       throw new MyCashNetworkError("Network request failed", { cause: err });
     }
 
-    let data: Record<string, unknown>;
+    let data: WireRecord;
     try {
-      data = await response.json() as Record<string, unknown>;
+      data = await response.json() as WireRecord;
     } catch (err) {
       throw new MyCashNetworkError("Failed to parse response JSON", {
         cause: err,
@@ -65,7 +98,7 @@ export class MyCash {
       );
     }
 
-    return transformKeys(data, snakeToCamel) as T;
+    return decode(data);
   }
 
   async paymentRequest(
@@ -73,29 +106,16 @@ export class MyCash {
   ): Promise<PaymentRequestResponse> {
     validatePaymentRequest(params);
 
-    const data = await this.#request<Record<string, unknown>>(
-      "paymentRequest",
-      {
-        productId: params.productId,
-        amount: params.amount,
-        customerMobile: params.customerMobile,
-        merchantMobile: params.merchantMobile,
-        narration: params.narration,
-        orderId: params.orderId,
-      },
+    return this.#exchange(
+      encodePaymentRequest(params, this.#config),
+      decodePaymentRequest,
     );
-
-    return { requestId: data.requestId as string };
   }
 
   async sendOtp(params: SendOtpParams): Promise<SendOtpResponse> {
     validateSendOtp(params);
 
-    const data = await this.#request<Record<string, unknown>>("sendOTP", {
-      mobileNumber: params.mobileNumber,
-    });
-
-    return { message: data.message as string };
+    return this.#exchange(encodeSendOtp(params, this.#config), decodeSendOtp);
   }
 
   async approvePayment(
@@ -103,22 +123,9 @@ export class MyCash {
   ): Promise<ApprovePaymentResponse> {
     validateApprovePayment(params);
 
-    const data = await this.#request<Record<string, unknown>>(
-      "approvePayment",
-      {
-        requestId: params.requestId,
-        otp: params.otp,
-        customerMobile: params.customerMobile,
-      },
+    return this.#exchange(
+      encodeApprovePayment(params, this.#config),
+      decodeApprovePayment,
     );
-
-    return {
-      message: data.message as string,
-      referenceNumber: data.referenceNumber as string,
-      transactionId: data.transactionId as string,
-      amountDebit: data.amountDebit as string,
-      amountCredit: data.amountCredit as string,
-      fee: data.fee as string,
-    };
   }
 }

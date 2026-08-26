@@ -110,17 +110,17 @@ Your server                SDK                     MyCash gateway          Custo
     │◀─ ApprovePaymentResp ─│                            │                   │
 ```
 
-## Low-level alternative
+## Step-by-step alternative
 
-Need custom control — retries around OTP expiry, non-standard sequencing, per-step logging? Use the core `MyCash` class directly:
+Need custom control — retries around OTP expiry, non-standard sequencing, per-step logging? `MyCashClient` exposes each step individually:
 
 ```ts
-import { MyCash } from "mycash-js";
+import { MyCashClient } from "mycash-js";
 
-const mycash = new MyCash({ /* same config */ });
+const client = new MyCashClient({ /* same config */ });
 
 // Step 1: create the payment request
-const { requestId } = await mycash.paymentRequest({
+const { requestId } = await client.paymentRequest({
   productId: "PRODUCT-001",
   amount: 100.0,
   customerMobile: "+67570000000",
@@ -130,17 +130,21 @@ const { requestId } = await mycash.paymentRequest({
 });
 
 // Step 2: send the OTP via SMS
-await mycash.sendOtp({ mobileNumber: "+67570000000" });
+await client.sendOtp({ mobileNumber: "+67570000000" });
 
 // Step 3: approve once you have the customer's code
-const result = await mycash.approvePayment({
+const result = await client.approvePayment({
   requestId,
   otp: "654321",
   customerMobile: "+67570000000",
 });
 ```
 
-See [Core concepts](/guide/core-concepts) for when to prefer each layer.
+::: warning The core `MyCash` class is deprecated
+If an older tutorial shows `new MyCash({ ... })`, use `new MyCashClient({ ... })` instead — same config, same methods. `MyCash` will be removed in v3.0.
+:::
+
+See [Core concepts](/guide/core-concepts) for the full picture.
 
 ## Next steps
 

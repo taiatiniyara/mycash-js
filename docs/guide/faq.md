@@ -29,7 +29,7 @@ From MyCash / Digicel during merchant onboarding: an API key, a merchant usernam
 
 ### Should I use `MyCashClient` or `MyCash`?
 
-Use `MyCashClient` unless you have a specific reason not to — its `pay()` method handles the three-step flow for you. Use the core `MyCash` class only when you need custom sequencing, per-step retries, or instrumentation. See [core concepts](/guide/core-concepts#two-layers-one-package).
+Use `MyCashClient` — always. Its `pay()` method handles the three-step flow, and its individual step methods cover custom sequencing, per-step retries, or instrumentation. The core `MyCash` class was deprecated in v2.0 and will be removed in v3.0; if you're on it, migrating is just swapping the constructor — every method exists on `MyCashClient`. See [core concepts](/guide/core-concepts#two-layers-one-package).
 
 ### Can I use this in the browser?
 

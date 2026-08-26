@@ -46,8 +46,8 @@ console.log(result.transactionId);
 
 - **Zero dependencies** — pure fetch + TypeScript, no polyfills
 - **Fully typed** — every request, response, and error is typed
-- **Two-layer design** — `MyCash` (core) for raw control, `MyCashClient` for a high-level `pay()` flow
-- **camelCase in, snake_case on the wire** — idiomatic TypeScript, automatic translation
+- **One deep client** — `pay()` orchestrates the full Payment flow; each step also exposed individually
+- **camelCase in, snake_case on the wire** — idiomatic TypeScript, translation confined to one internal codec
 - **Client-side validation** — catches bad inputs before hitting the network
 - **Injectable fetch** — use the built-in fetch or pass your own for testing
 
